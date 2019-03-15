@@ -67,17 +67,26 @@
             class="list-group-item d-flex justify-content-between">
             <div>
               <span>{{ work.title }}</span>
+              <b-collapse :id="work.id+1">
+                <b-card>
+                  <div class="">
+                    <div>
+                      {{work.min}}:{{work.sec}}
+                    </div>
+                      <b-button @click="startTimer" variant="outline-primary">Comenzar</b-button>
+                    <div>
+
+                    </div>
+                  </div>
+                </b-card>
+              </b-collapse>
             </div>
             <div>
-              <button
-                type="button"
-                class="btn btn-success btn-xs glyphicon glyphicon-ok"></button>
-                <b-button variant="info" @click="updateModal(work)"><i class="fas fa-edit"></i></b-button>
-              <button
-                type="button"
-                class="btn btn-danger btn-xs glyphicon glyphicon-remove"
-                v-on:click="deleteWork(index)"> <i class="fas fa-times"></i></button>
+              <b-button variant="success" v-b-toggle="work.id+1"> <i class="fas fa-play"></i></b-button>
+              <b-button variant="info" @click="updateModal(work)"><i class="fas fa-edit"></i></b-button>
+              <b-button variant="danger" v-on:click="deleteWork(index)"> <i class="fas fa-times"></i></b-button>
             </div>
+
           </li>
         </ul>
       </div>
@@ -152,7 +161,6 @@ export default {
           min:10,
           sec:10,
           realTime: 0,
-          realTime:0,
           totalTime: 0,
         },
         {
@@ -162,7 +170,6 @@ export default {
           min:120,
           sec:0,
           realTime: 0,
-          realTime:0,
           totalTime: 0,
         },
         {
@@ -172,7 +179,6 @@ export default {
           min:2,
           sec:10,
           realTime: 0,
-          realTime:0,
           totalTime: 0,
         }
       ],
@@ -184,8 +190,8 @@ export default {
       realTime:0,
       totalTime: 0,
       textTime: '',
-      workUpdate: null
-      // timer: null,
+      workUpdate: null,
+      timer: null,
       // min: null,
       // sec: null,
       // totalTime:0,
@@ -250,16 +256,15 @@ export default {
       this.works.splice(item, 1);
     },
 
-    startTimer: function() {
-      this.totalTime=(this.min * 60) + this.sec
-      this.timer = setInterval(() => this.countdown(), 1000);
-      this.resetButton = true;
-      this.title = "Greatness is within sight!!"
+    startTimer: function(min, sec) {
+      let totalTime=(min * 60) + sec
+      this.timer = setInterval(() => this.countdown(totalTime), 1000);
+      console.log(this.timer)
     },
     padTime: function(time) {
       return (time < 10 ? '0' : '') + time;
     },
-    countdown: function() {
+    countdown: function(totalTime) {
       if(this.totalTime >= 1){
         this.totalTime--;
       } else{
@@ -269,17 +274,16 @@ export default {
 
   },
 
-
  computed: {
-    minutes: function() {
-      const minutes = Math.floor(this.totalTime / 60);
+    minutes: function(totalTime) {
+      const minutes = Math.floor(totalTime / 60);
       return this.padTime(minutes);
     },
-    seconds: function() {
-      const seconds = this.totalTime - (this.minutes * 60);
+    seconds: function(totalTime,minutes) {
+      const seconds = this.totalTime - (minutes * 60);
       return this.padTime(seconds);
     }
-  }
+  },
 };
 </script>
 <style lang="">
